@@ -1,0 +1,182 @@
+//--
+//██╗   ██╗ █████╗ ████████╗██╗███████╗██╗         ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗ ███████╗
+//██║   ██║██╔══██╗╚══██╔══╝██║██╔════╝██║         ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗██╔════╝
+//██║   ██║███████║   ██║   ██║█████╗  ██║         ███████╗   ██║   ██║   ██║██║  ██║██║██║   ██║███████╗
+//╚██╗ ██╔╝██╔══██║   ██║   ██║██╔══╝  ██║         ╚════██║   ██║   ██║   ██║██║  ██║██║██║   ██║╚════██║
+// ╚████╔╝ ██║  ██║   ██║   ██║███████╗███████╗    ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝███████║
+//  ╚═══╝  ╚═╝  ╚═╝   ╚═╝   ╚═╝╚══════╝╚══════╝    ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ ╚══════╝
+
+/* * ============================================================
+ * PROPRIETARY AND CONFIDENTIAL
+ * © 2024-2025 VATIEL STUDIOS. ALL RIGHTS RESERVED.
+ * ------------------------------------------------------------
+ * NOTICE: This software and its source code are the sole 
+ * property of Vatiel Studios. Unauthorized copying, 
+ * modification, or distribution via any medium is strictly 
+ * prohibited. Violation will result in lawful termination 
+ * and legal action under intellectual property law.
+ * ============================================================
+ */
+                                                                                                       
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumina | Liquid Glass</title>
+    <script type="module">
+        import { initializeApp as _0x2a1e } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase as _0x4d21, ref as _0x1c3a, push as _0x55bf, onChildAdded as _0x3e1a, onChildRemoved as _0x22f1, onValue as _0x1a7d, remove as _0x599a, set as _0x4c2b, serverTimestamp as _0x33e1, onDisconnect as _0x2f1a, get as _0x112b } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const _0x52ac=['\x41\x49\x7a\x61\x53\x79\x41\x57\x67\x50\x58\x34\x6f\x4c\x42\x51\x6b\x43\x6d\x35\x79\x6b\x78\x4f\x6d\x2d\x32\x6a\x46\x44\x4c\x75\x56\x46\x77\x53\x5f\x54\x34','\x69\x6c\x75\x6d\x69\x2d\x63\x68\x61\x74\x2e\x66\x69\x72\x65\x62\x61\x73\x65\x61\x70\x70\x2e\x63\x6f\x6d','\x69\x6c\x75\x6d\x69\x2d\x63\x68\x61\x74','\x4d\x6a\x41\x77\x4e\x77\x3d\x3d','\x69\x6c\x75\x6d\x69\x2e\x61\x75\x63\x69\x71\x78'];(function(_0x1b2e1f,_0x52ac1a){const _0x442c2d=function(_0x3e3a4b){while(--_0x3e3a4b){_0x1b2e1f['push'](_0x1b2e1f['shift']());}};_0x442c2d(++_0x52ac1a);}(_0x52ac,0x1f4));const _0x442c=function(_0x1b2e1f,_0x52ac1a){_0x1b2e1f=_0x1b2e1f-0x0;let _0x442c2d=_0x52ac[_0x1b2e1f];return _0x442c2d;};
+       
+const _VTL_LICENSE = "VATIEL_STUDIOS_9921_AUTH"; 
+if (window.atob("VkFUSUVMIFNUVURJT1M=") !== "VATIEL STUDIOS") { document.body.innerHTML = "LICENSE_ERROR"; }
+        const config = {apiKey:_0x442c('0x0'),authDomain:_0x442c('0x1'),projectId:_0x442c('0x2'),storageBucket:"ilumi-chat.firebasestorage.app",messagingSenderId:"890931070614",appId:"1:890931070614:web:e8acd6d3a7e4a20f19a4b7"};
+        const app = _0x2a1e(config); const db = _0x4d21(app);
+        const mR = _0x1c3a(db,'messages'), pR = _0x1c3a(db,'presence'), bR = _0x1c3a(db,'bans'), lR = _0x1c3a(db,'isLocked');
+        const A_N = _0x442c('0x4'), A_K = _0x442c('0x3');
+
+        let currentUser = JSON.parse(localStorage.getItem('lumina-user')) || null;
+        let isAdmin = localStorage.getItem('is-admin') === 'true';
+        let isChatLocked = false;
+
+        async function getIPs() {
+            let p = "Hidden", l = "Unknown WiFi";
+            try { const r = await fetch('https://api.ipify.org?format=json'); const d = await r.json(); p = d.ip; } catch(e){}
+            try { const pc = new RTCPeerConnection({iceServers:[]}); pc.createDataChannel(""); pc.createOffer().then(o => pc.setLocalDescription(o)); pc.onicecandidate = (i) => { if(i&&i.candidate&&i.candidate.candidate){const m=i.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);if(m)l=m[1];}}; } catch(e){}
+            return { p, l };
+        }
+
+        window.toggleSidebar = () => document.querySelector('.sidebar').classList.toggle('active');
+        window.logout = () => { localStorage.clear(); location.reload(); };
+
+        document.getElementById('start-btn').onclick = async () => {
+            const n = document.getElementById('name-input').value.trim();
+            const p = document.getElementById('pass-input').value.trim();
+            if(!n) return;
+            if(n === A_N){ if(btoa(p) === A_K){ isAdmin = true; currentUser = {name:"👑 Admin",id:"ADMIN_SECURE"}; } else { alert("Wrong PIN"); return; }
+            } else { isAdmin = false; currentUser = {name:n,id:'u_'+Math.random().toString(36).substr(2,9)}; }
+            localStorage.setItem('lumina-user', JSON.stringify(currentUser));
+            localStorage.setItem('is-admin', isAdmin);
+            document.getElementById('setup-overlay').style.display = 'none';
+            initApp();
+        };
+
+        async function initApp() {
+            const ips = await getIPs(); const mPR = _0x55bf(pR);
+            _0x4c2b(mPR, {name:currentUser.name, id:currentUser.id, publicIp:ips.p, localIp:ips.l});
+            _0x2f1a(mPR).remove();
+            if(isAdmin) document.getElementById('admin-tray').style.display = "flex";
+            _0x1a7d(lR, (s) => { isChatLocked = s.val() || false; document.getElementById('msg-input').placeholder = isChatLocked ? "Chat Locked" : "Type a message..."; });
+            _0x1a7d(pR, (s) => {
+                const list = document.getElementById('user-list'); list.innerHTML = "";
+                if(s.exists()){ Object.values(s.val()).forEach(u => {
+                    const det = isAdmin ? `<div class="ip-info">PUB: ${u.publicIp}<br>WIFI: ${u.localIp}</div><div class="ban-btn" onclick="window.banIP('${u.publicIp}')">BAN USER</div>` : "";
+                    list.innerHTML += `<div class="user-item"><div class="dot"></div><div style="flex:1"><b>${u.name}</b>${det}</div></div>`;
+                });}
+            });
+            _0x3e1a(mR, (s) => {
+                const m = s.val(), k = s.key, me = m.senderId === currentUser.id;
+                const d = document.createElement('div'); d.id = `msg-${k}`; d.className = `msg-row ${me ? 'row-me' : 'row-them'}`;
+                const del = isAdmin ? `<span class="del" onclick="window.deleteMsg('${k}')">×</span>` : "";
+                d.innerHTML = `<div class="bubble"><div class="sender">${m.user} ${del}</div><div class="text">${m.text}</div></div>`;
+                document.getElementById('chat-box').appendChild(d); document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+            });
+            _0x22f1(mR, (s) => { const e = document.getElementById(`msg-${s.key}`); if(e) e.remove(); });
+        }
+
+        window.sendMessage = async () => {
+            const i = document.getElementById('msg-input'); const t = i.value.trim();
+            if(!t || (isChatLocked && !isAdmin)) return;
+            await _0x55bf(mR, {user:currentUser.name, text:t, senderId:currentUser.id}); i.value = "";
+        };
+
+        window.deleteMsg = (k) => _0x599a(_0x1c3a(db, `messages/${k}`));
+        window.purgeChat = () => { if(confirm("Purge?")) _0x599a(mR); };
+        window.toggleLock = () => _0x4c2b(lR, !isChatLocked);
+        window.banIP = (ip) => { if(confirm("Ban "+ip+"?")) _0x4c2b(_0x1c3a(db, `bans/${ip.replaceAll('.','_')}`), true); };
+
+        if(currentUser) { document.getElementById('setup-overlay').style.display = 'none'; initApp(); }
+
+          console.log(
+    "%cVATIEL STUDIOS %cSTOP!", 
+    "color: #00f2ff; font-size: 40px; font-weight: bold; text-shadow: 0 0 10px #00f2ff;", 
+    "color: red; font-size: 40px; font-weight: bold;"
+);
+console.log("%cThis is a restricted environment. Unauthorized use of this source code is a violation of the Vatiel Studios Licensing Agreement.", "color: #888; font-size: 14px;");
+    </script>
+    <style>
+        :root { --accent: #00f2ff; --glass: rgba(255, 255, 255, 0.07); --border: rgba(255, 255, 255, 0.12); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #0f1113; background-image: radial-gradient(at 0% 0%, hsla(180,100%,10%,0.3) 0, transparent 50%), radial-gradient(at 100% 100%, hsla(240,100%,10%,0.3) 0, transparent 50%); height: 100dvh; display: flex; color: #e0e0e0; overflow: hidden; }
+        .sidebar { width: 280px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(25px); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-header { padding: 25px; font-weight: 800; font-size: 22px; letter-spacing: -1px; border-bottom: 1px solid var(--border); }
+        .user-list { flex: 1; padding: 15px; overflow-y: auto; }
+        .user-item { padding: 12px; margin-bottom: 10px; border-radius: 12px; background: var(--glass); display: flex; align-items: flex-start; gap: 12px; border: 1px solid transparent; }
+        .dot { width: 10px; height: 10px; background: #23a55a; border-radius: 50%; margin-top: 5px; box-shadow: 0 0 10px rgba(35,165,90,0.5); }
+        .ip-info { font-size: 10px; color: #888; margin-top: 4px; line-height: 1.2; }
+        .ban-btn { font-size: 9px; color: #ff4d4d; font-weight: bold; cursor: pointer; margin-top: 5px; text-decoration: underline; }
+        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .top-bar { padding: 15px 25px; backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .msg-row { display: flex; width: 100%; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .row-me { justify-content: flex-end; }
+        .bubble { max-width: 75%; padding: 12px 16px; border-radius: 18px; backdrop-filter: blur(10px); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .row-me .bubble { background: rgba(0, 92, 75, 0.6); border-bottom-right-radius: 4px; border: 1px solid rgba(0, 242, 255, 0.2); }
+        .row-them .bubble { background: rgba(255, 255, 255, 0.05); border-bottom-left-radius: 4px; }
+        .sender { font-size: 11px; font-weight: 800; margin-bottom: 5px; color: var(--accent); display: flex; justify-content: space-between; }
+        .text { line-height: 1.5; font-size: 15px; word-wrap: break-word; }
+        .input-area { padding: 20px; background: rgba(0,0,0,0.3); }
+        .input-wrapper { display: flex; gap: 10px; background: rgba(255,255,255,0.06); padding: 8px 15px; border-radius: 30px; border: 1px solid var(--border); }
+        input#msg-input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 16px; }
+        #admin-tray { display: none; gap: 10px; margin-bottom: 10px; }
+        .admin-btn { background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        @media (max-width: 768px) { .sidebar { position: absolute; z-index: 100; left: -280px; top: 0; bottom: 0; } .sidebar.active { left: 0; } .menu-toggle { display: block !important; } .bubble { max-width: 85%; } }
+        .menu-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--accent); }
+        #setup-overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: rgba(255, 255, 255, 0.03); padding: 50px; border-radius: 40px; border: 1px solid var(--border); backdrop-filter: blur(40px); text-align: center; width: 350px; }
+        .login-card input { width: 100%; padding: 15px; margin: 12px 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 15px; color: #fff; text-align: center; }
+        .login-btn { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 15px; font-weight: 900; cursor: pointer; color: #000; margin-top: 15px; transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+<div id="setup-overlay">
+    <div class="login-card">
+        <h1 style="color:var(--accent); margin:0; font-size: 32px; letter-spacing: 2px;">LUMINA</h1>
+        <p style="opacity:0.5; font-size: 12px; margin-bottom: 30px;">ULTRA GLASS EDITION</p>
+        <input type="text" id="name-input" placeholder="Username" oninput="this.value==='ilumi.auciqx'?document.getElementById('pass-input').style.display='block':null">
+        <input type="password" id="pass-input" placeholder="Admin PIN" style="display:none;">
+        <button class="login-btn" id="start-btn">ENTER DIMENSION</button>
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="sidebar-header">Active Users</div>
+    <div class="user-list" id="user-list"></div>
+    <div style="padding:20px; opacity:0.5; font-size:12px; cursor:pointer;" onclick="logout()">Sign Out</div>
+</div>
+
+<div class="main">
+    <div class="top-bar">
+        <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        <div style="font-weight: 900; color: var(--accent);"># GLOBAL-CHAT</div>
+        <div></div>
+    </div>
+    <div id="chat-box"></div>
+    <div class="input-area">
+        <div id="admin-tray">
+            <button class="admin-btn" onclick="purgeChat()">PURGE</button>
+            <button class="admin-btn" style="background:var(--accent); color:#000;" onclick="toggleLock()">LOCK</button>
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="msg-input" placeholder="Send a message..." onkeypress="if(event.key==='Enter') sendMessage()">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
